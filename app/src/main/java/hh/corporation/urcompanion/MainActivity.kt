@@ -1,4 +1,4 @@
-package eu.insertcode.urcompanion
+package hh.corporation.urcompanion
 
 import android.content.Intent
 import android.os.Bundle

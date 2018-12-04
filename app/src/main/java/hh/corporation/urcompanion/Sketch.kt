@@ -1,11 +1,10 @@
-package eu.insertcode.urcompanion
+package hh.corporation.urcompanion
 
 import processing.core.PApplet
 import java.util.*
 
 /**
  * Created by maartendegoede on 04/12/2018.
- * Copyright © 2018 insetCode.eu. All rights reserved.
  */
 class Sketch : PApplet() {
     private val random = Random()

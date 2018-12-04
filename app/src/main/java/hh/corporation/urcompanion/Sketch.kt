@@ -23,9 +23,9 @@ class Sketch : PApplet() {
             fill(220f, 220f, 220f)
             noStroke()
             rect(175f, 230f, 500f, 300f)
-            val a = random.nextInt(2)
-            val b = random.nextInt(2)
-            val c = random.nextInt(2)
+            val a = random.nextInt(3)
+            val b = random.nextInt(3)
+            val c = random.nextInt(3)
             val diceSum = a + b + c
 
             fill(255f, 255f, 255f)

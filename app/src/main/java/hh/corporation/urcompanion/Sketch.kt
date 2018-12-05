@@ -8,12 +8,12 @@ import processing.event.TouchEvent
 /**
  * Created by maartendegoede on 04/12/2018.
  */
-class Sketch : PApplet() {
+class Sketch(private val w: Int, private val h: Int) : PApplet() {
     private val state = State(State.Page.MAIN)
     private val background by lazy { loadImageAsset("app_background.png") }
 
     override fun settings() {
-        fullScreen()
+        size(w, h)
     }
 
     override fun setup() {

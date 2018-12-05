@@ -7,7 +7,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import processing.android.PFragment
 
 class MainActivity : AppCompatActivity() {
-    private val sketch by lazy { Sketch() }
+    private val sketch by lazy {
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        Sketch(width, height)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

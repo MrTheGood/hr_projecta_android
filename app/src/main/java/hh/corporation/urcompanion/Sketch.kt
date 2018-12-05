@@ -1,6 +1,7 @@
 package hh.corporation.urcompanion
 
 import hh.corporation.urcompanion.State.Page
+import hh.corporation.urcompanion.util.loadImageAsset
 import processing.core.PApplet
 import processing.event.TouchEvent
 
@@ -9,6 +10,7 @@ import processing.event.TouchEvent
  */
 class Sketch : PApplet() {
     private val state = State(State.Page.MAIN)
+    private val background by lazy { loadImageAsset("app_background.png") }
 
     override fun settings() {
         fullScreen()
@@ -20,6 +22,7 @@ class Sketch : PApplet() {
     override fun draw() {
         fill(255f, 255f, 255f)
         background(255f, 255f, 255f)
+        background(background)
 
         if (state.page == Page.MAIN) {
             rect(50f, 20f, 200f, 200f, 7f)

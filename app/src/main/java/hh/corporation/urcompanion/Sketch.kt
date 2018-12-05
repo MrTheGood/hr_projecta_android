@@ -21,27 +21,33 @@ class Sketch : PApplet() {
 
     override fun draw() {
         fill(255f, 255f, 255f)
-        background(255f, 255f, 255f)
         background(background)
 
         if (state.page == Page.MAIN) {
-            rect(50f, 20f, 200f, 200f, 7f)
-            rect(300f, 20f, 200f, 200f, 7f)
-            rect(550f, 20f, 200f, 200f, 7f)
+            val diceSize = 200f
+            val diceY = height - diceSize - 256f
+            val dices = listOf(
+                    RectView(50f, diceY, diceSize, diceSize, 255, 16f),
+                    TextView(50f + diceSize / 2, diceY + diceSize / 3 * 2, 0, "${state.dice.x}"),
 
-            fill(0)
+                    RectView(width / 2f - (diceSize / 2), diceY, diceSize, diceSize, 255, 16f),
+                    TextView(width / 2f, diceY + diceSize / 3 * 2, 0, "${state.dice.y}"),
+
+                    RectView(width - 50f - diceSize, diceY, diceSize, diceSize, 255, 16f),
+                    TextView(width - 50f - diceSize / 2, diceY + diceSize / 3 * 2, 0, "${state.dice.z}")
+            )
+
             textSize(100f)
-            text(state.dice.x, 115f, 150f)
-            text(state.dice.y, 370f, 150f)
-            text(state.dice.z, 620f, 150f)
+            textAlign(CENTER)
+            for (dice in dices)
+                dice.draw(this)
 
-            if (state.dice.sum == 0 || state.dice.sum == 3 || state.dice.sum == 6) {
-                textSize(45f)
-                fill(0)
-                text("You may add a pawn!", 175f, 360f)
-            }
+
             textSize(45f)
-            text("Move ${state.dice.sum} step(s)", 245f, 280f)
+            fill(0)
+            if (state.dice.sum == 0 || state.dice.sum == 3 || state.dice.sum == 6)
+                text("You may add a pawn!", width / 2f, height - 192f)
+            text("Move ${state.dice.sum} step(s)", width / 2f, height - 128f)
         }
     }
 

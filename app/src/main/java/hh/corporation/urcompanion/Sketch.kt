@@ -10,7 +10,7 @@ import processing.event.TouchEvent
  */
 class Sketch(private val w: Int, private val h: Int) : PApplet() {
     private val state = State(State.Page.MAIN)
-    private val background by lazy { loadImageAsset("app_background.png") }
+    private val background by lazy { loadImageAsset("app_background.png")?.apply { resize(g.width, g.height) } }
 
     override fun settings() {
         size(w, h)

@@ -48,6 +48,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         background(background)
 
         if (state.page == Page.MAIN) {
+            image(loadImageAsset("ur.png"), width / 2f - 88f, 56f, 176f, 160f)
             TextView(width / 2f, 640f, "Draw a card").draw(this)
             buttons.forEach { it.draw(this) }
 

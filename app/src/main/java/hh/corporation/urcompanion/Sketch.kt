@@ -16,16 +16,23 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         listOf(
                 Button(
                         x = width / 2f - 128f,
-                        y = height - 650f,
+                        y = 672f,
                         width = 256f,
+                        height = 96f
+                ).apply { text = "+ PLUS" },
+                Button(
+                        x = width / 2f - 128f,
+                        y = 800f,
+                        width = 256f,
+                        height = 96f
+                ).apply { text = "O CIRCLE" },
+                Button(
+                        x = width / 2f - 144f,
+                        y = height - 650f,
+                        width = 288f,
                         height = 96f,
-                        radii = 8f,
-                        colorR = 216f,
-                        colorG = 27f,
-                        colorB = 96f,
-                        textColor = 255,
                         onClick = state::throwDice
-                ).apply { text = "Throw Dice" }
+                ).apply { text = "THROW DICE" }
         )
     }
 
@@ -41,6 +48,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         background(background)
 
         if (state.page == Page.MAIN) {
+            TextView(width / 2f, 640f, "Draw a card").draw(this)
             buttons.forEach { it.draw(this) }
 
             // region dice

@@ -56,11 +56,11 @@ class Button(
         y: Float,
         width: Float,
         height: Float,
-        radii: Float,
-        colorR: Float = 255f,
-        colorG: Float = 255f,
-        colorB: Float = 255f,
-        var textColor: Int = 0,
+        radii: Float = 8f,
+        colorR: Float = 216f,
+        colorG: Float = 27f,
+        colorB: Float = 96f,
+        var textColor: Int = 255,
         var onClick: () -> Unit = {}
 ) : RectView(x, y, width, height, radii, colorR, colorG, colorB) {
     var touching = false

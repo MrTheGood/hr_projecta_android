@@ -11,6 +11,7 @@ import processing.event.TouchEvent
 class Sketch(private val w: Int, private val h: Int) : PApplet() {
     private val state = State(State.Page.MAIN)
     private val background by lazy { loadImageAsset("app_background.png")?.apply { resize(g.width, g.height) } }
+    private val logo by lazy { loadImageAsset("ur.png") }
 
     private val buttons by lazy {
         listOf(
@@ -48,7 +49,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         background(background)
 
         if (state.page == Page.MAIN) {
-            image(loadImageAsset("ur.png"), width / 2f - 88f, 56f, 176f, 160f)
+            image(logo, width / 2f - 88f, 56f, 176f, 160f)
             TextView(width / 2f, 640f, "Draw a card").draw(this)
             buttons.forEach { it.draw(this) }
 

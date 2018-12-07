@@ -1,6 +1,7 @@
 package hh.corporation.urcompanion
 
 import processing.core.PApplet
+import processing.core.PImage
 
 /**
  * Created by maartendegoede on 05/12/2018.
@@ -51,7 +52,7 @@ class TextView(
 
 }
 
-class Button(
+open class Button(
         x: Float,
         y: Float,
         width: Float,
@@ -73,13 +74,31 @@ class Button(
 
     private var textView = TextView(0f, 0f, "")
 
-    override fun draw(applet: PApplet) {
-        if (touching) applet.stroke(0)
-        else applet.noStroke()
+    override fun draw(applet: PApplet) = applet.run {
+        if (touching) stroke(0)
+        else noStroke()
 
-        applet.textSize(45f)
+        textSize(45f)
         super.draw(applet)
         textView.draw(applet)
-        applet.stroke(0)
+        stroke(0)
+    }
+}
+
+class IconButton(
+        val image: PImage,
+        x: Float,
+        y: Float,
+        width: Float = image.width.toFloat(),
+        height: Float = image.height.toFloat(),
+        onClick: () -> Unit = {}
+) : Button(x, y, width, height, onClick = onClick) {
+
+    init {
+        image.resize(width.toInt(), height.toInt())
+    }
+
+    override fun draw(applet: PApplet) = applet.run {
+        image(image, x, y)
     }
 }

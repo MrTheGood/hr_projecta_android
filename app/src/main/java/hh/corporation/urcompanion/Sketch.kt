@@ -15,6 +15,13 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
 
     private val buttons by lazy {
         listOf(
+                IconButton(
+                        image = loadImageAsset("ic_book.png")!!,
+                        x = width - 104f,
+                        y = 92f,
+                        width = 72f,
+                        height = 72f
+                ),
                 Button(
                         x = width / 2f - 128f,
                         y = 672f,

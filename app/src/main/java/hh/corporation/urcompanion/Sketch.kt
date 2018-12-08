@@ -2,6 +2,7 @@ package hh.corporation.urcompanion
 
 import hh.corporation.urcompanion.State.Page
 import hh.corporation.urcompanion.util.loadImageAsset
+import hh.corporation.urcompanion.util.openPdf
 import processing.core.PApplet
 import processing.event.TouchEvent
 
@@ -20,7 +21,8 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
                         x = width - 104f,
                         y = 92f,
                         width = 72f,
-                        height = 72f
+                        height = 72f,
+                        onClick = { openPdf("ur_manual.pdf") }
                 ),
                 Button(
                         x = width / 2f - 128f,

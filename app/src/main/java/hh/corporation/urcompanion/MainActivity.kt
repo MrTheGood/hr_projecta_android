@@ -26,4 +26,8 @@ class MainActivity : AppCompatActivity() {
     public override fun onNewIntent(intent: Intent) {
         sketch.onNewIntent(intent)
     }
+
+    override fun onBackPressed() {
+        sketch.onBackPressed()
+    }
 }

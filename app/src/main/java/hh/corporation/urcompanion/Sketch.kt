@@ -1,6 +1,7 @@
 package hh.corporation.urcompanion
 
 import hh.corporation.urcompanion.State.Page
+import hh.corporation.urcompanion.data.Cards
 import hh.corporation.urcompanion.util.loadImageAsset
 import hh.corporation.urcompanion.util.openPdf
 import processing.core.PApplet
@@ -13,28 +14,38 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
     private val state = State(State.Page.MAIN)
     private val background by lazy { loadImageAsset("app_background.png")?.apply { resize(g.width, g.height) } }
     private val logo by lazy { loadImageAsset("ur.png") }
+    private val appBarButton by lazy {
+        IconButton(
+                image = loadImageAsset("ic_book.png")!!,
+                x = width - 104f,
+                y = 92f,
+                width = 72f,
+                height = 72f,
+                onClick = { openPdf("ur_manual.pdf") }
+        )
+    }
 
-    private val buttons by lazy {
+    private val mainPageButtons by lazy {
         listOf(
-                IconButton(
-                        image = loadImageAsset("ic_book.png")!!,
-                        x = width - 104f,
-                        y = 92f,
-                        width = 72f,
-                        height = 72f,
-                        onClick = { openPdf("ur_manual.pdf") }
-                ),
                 Button(
                         x = width / 2f - 128f,
                         y = 672f,
                         width = 256f,
-                        height = 96f
+                        height = 96f,
+                        onClick = {
+                            state.drawCard(Cards.Type.PLUS)
+                            state.page = Page.CARDS
+                        }
                 ).apply { text = "+ PLUS" },
                 Button(
                         x = width / 2f - 128f,
                         y = 800f,
                         width = 256f,
-                        height = 96f
+                        height = 96f,
+                        onClick = {
+                            state.drawCard(Cards.Type.CIRCLE)
+                            state.page = Page.CARDS
+                        }
                 ).apply { text = "O CIRCLE" },
                 Button(
                         x = width / 2f - 144f,
@@ -57,10 +68,11 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         fill(255f, 255f, 255f)
         background(background)
 
+        image(logo, width / 2f - 88f, 56f, 176f, 160f)
+        appBarButton.draw(this)
         if (state.page == Page.MAIN) {
-            image(logo, width / 2f - 88f, 56f, 176f, 160f)
             TextView(width / 2f, 640f, "Draw a card").draw(this)
-            buttons.forEach { it.draw(this) }
+            mainPageButtons.forEach { it.draw(this) }
 
             // region dice
             val diceSize = 200f
@@ -87,27 +99,47 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
             text("Move ${state.dice.sum} step(s)", width / 2f, height - 128f)
             // endregion
         }
+
+        if (state.page == Page.CARDS) {
+            textAlign(CENTER)
+            textSize(45f)
+            fill(0)
+            text("Card type: ${state.card.type}:${state.card.card}", width / 2f, height / 2f)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (state.page == Page.CARDS) state.page = Page.MAIN
+        else super.onBackPressed()
     }
 
     override fun touchStarted(event: TouchEvent) {
         val p = event.getPointer(0)
-        buttons.forEach {
-            it.touching = it.collides(p.x, p.y)
+        appBarButton.apply { touching = collides(p.x, p.y) }
+        if (state.page == Page.MAIN) {
+            mainPageButtons.forEach {
+                it.touching = it.collides(p.x, p.y)
+            }
         }
     }
 
     override fun touchMoved(event: TouchEvent) {
         val p = event.getPointer(0)
-        buttons.forEach {
-            it.touching = it.touching && it.collides(p.x, p.y)
-        }
+        appBarButton.apply { touching = touching && collides(p.x, p.y) }
+        if (state.page == Page.MAIN)
+            mainPageButtons.forEach { it.touching = it.touching && it.collides(p.x, p.y) }
     }
 
     override fun touchEnded(event: TouchEvent) {
-        buttons.forEach {
-            if (it.touching)
-                it.onClick()
-            it.touching = false
+        appBarButton.apply {
+            if (touching) onClick()
+            touching = false
+        }
+        if (state.page == Page.MAIN) {
+            mainPageButtons.forEach {
+                if (it.touching) it.onClick()
+                it.touching = false
+            }
         }
     }
 }

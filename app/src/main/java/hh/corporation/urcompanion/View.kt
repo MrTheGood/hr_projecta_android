@@ -20,67 +20,31 @@ abstract class View(
     abstract fun draw(applet: PApplet)
 }
 
-open class RectView(
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float,
-        var radii: Float,
-        var colorR: Float = 255f,
-        var colorG: Float = 255f,
-        var colorB: Float = 255f
-) : View(x, y, width, height) {
-
-    override fun draw(applet: PApplet): Unit = applet.run {
-        fill(colorR, colorG, colorB)
-        rect(x, y, this@RectView.width, this@RectView.height, radii)
-    }
-
-}
-
-class TextView(
-        x: Float,
-        y: Float,
-        var text: String,
-        var color: Int = 0
-) : View(x, y, 0f, 0f) {
-
-    override fun draw(applet: PApplet) = applet.run {
-        fill(color)
-        text(text, x, y)
-    }
-
-}
-
 open class Button(
         x: Float,
         y: Float,
         width: Float,
         height: Float,
-        radii: Float = 8f,
-        colorR: Float = 216f,
-        colorG: Float = 27f,
-        colorB: Float = 96f,
+        var radii: Float = 8f,
+        var colorR: Float = 216f,
+        var colorG: Float = 27f,
+        var colorB: Float = 96f,
         var textColor: Int = 255,
+        var text: String = "",
         var onClick: () -> Unit = {}
-) : RectView(x, y, width, height, radii, colorR, colorG, colorB) {
+) : View(x, y, width, height) {
     var touching = false
-
-    var text: String = ""
-        set(value) {
-            field = value
-            textView = TextView(x + width / 2f, y + height / 1.5f, value, textColor)
-        }
-
-    private var textView = TextView(0f, 0f, "")
 
     override fun draw(applet: PApplet) = applet.run {
         if (touching) stroke(0)
         else noStroke()
 
         textSize(45f)
-        super.draw(applet)
-        textView.draw(applet)
+        fill(colorR, colorG, colorB)
+        rect(x, y, this@Button.width, this@Button.height, radii)
+
+        fill(textColor)
+        text(text, x + this@Button.width / 2f, y + this@Button.height / 1.5f)
         stroke(0)
     }
 }

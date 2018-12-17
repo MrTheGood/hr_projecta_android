@@ -64,28 +64,31 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
                         y = 672f,
                         width = 256f,
                         height = 96f,
+                        text = "+ PLUS",
                         onClick = {
                             state.drawCard(Cards.Type.PLUS)
                             state.page = Page.CARDS
                         }
-                ).apply { text = "+ PLUS" },
+                ),
                 Button(
                         x = width / 2f - 128f,
                         y = 800f,
                         width = 256f,
                         height = 96f,
+                        text = "O CIRCLE",
                         onClick = {
                             state.drawCard(Cards.Type.CIRCLE)
                             state.page = Page.CARDS
                         }
-                ).apply { text = "O CIRCLE" },
+                ),
                 Button(
                         x = width / 2f - 144f,
                         y = height - 650f,
                         width = 288f,
                         height = 96f,
+                        text = "THROW DICE",
                         onClick = state::throwDice
-                ).apply { text = "THROW DICE" }
+                )
         )
     }
 
@@ -96,6 +99,34 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
     override fun setup() {
     }
 
+    fun drawRect(
+            x: Float,
+            y: Float,
+            width: Float,
+            height: Float,
+            radii: Float,
+            colorR: Float = 255f,
+            colorG: Float = 255f,
+            colorB: Float = 255f
+    ) {
+        fill(colorR, colorG, colorB)
+        rect(x, y, width, height, radii)
+    }
+
+    fun drawDice(
+            x: Float,
+            y: Float,
+            size: Float,
+            value: Int,
+            radii: Float = 16f
+    ) {
+        textSize(100f)
+        textAlign(CENTER)
+        drawRect(x, y, size, size, radii)
+        fill(0)
+        text(value, x + size / 2, y + size / 3 * 2)
+    }
+
     override fun draw() {
         fill(255f, 255f, 255f)
         background(background)
@@ -103,50 +134,47 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         image(logo, width / 2f - 88f, 56f, 176f, 160f)
         appBarButton.draw(this)
         if (state.page == Page.MAIN) {
-            TextView(width / 2f, 640f, "Draw a card").draw(this)
-            mainPageButtons.forEach { it.draw(this) }
-
-            // region dice
-            val diceSize = 200f
-            val diceY = height - diceSize - 256f
-            val dices = listOf(
-                    RectView(50f, diceY, diceSize, diceSize, 16f),
-                    TextView(50f + diceSize / 2, diceY + diceSize / 3 * 2, "${state.dice.x}"),
-
-                    RectView(width / 2f - (diceSize / 2), diceY, diceSize, diceSize, 16f),
-                    TextView(width / 2f, diceY + diceSize / 3 * 2, "${state.dice.y}"),
-
-                    RectView(width - 50f - diceSize, diceY, diceSize, diceSize, 16f),
-                    TextView(width - 50f - diceSize / 2, diceY + diceSize / 3 * 2, "${state.dice.z}")
-            )
-
-            textSize(100f)
-            textAlign(CENTER)
-            dices.forEach { it.draw(this) }
-
-            textSize(45f)
-            fill(0)
-            if (state.dice.sum == 0 || state.dice.sum == 3 || state.dice.sum == 6)
-                text("You may add a pawn!", width / 2f, height - 192f)
-            text("Move ${state.dice.sum} step(s)", width / 2f, height - 128f)
-            // endregion
+            drawMainPage()
         }
 
         if (state.page == Page.CARDS) {
-            cardPageButtons.forEach { it.draw(this) }
+            drawCardsPage()
+        }
+    }
 
-            textAlign(CENTER)
-            textSize(45f)
-            fill(0)
-            image(card, 64f, 224f, width - 128f, height - 480f)
-            text(state.card.card, width / 2f, height / 2f)
+    fun drawMainPage() {
+        fill(0)
+        text("Draw a card", width / 2f, 640f)
+        mainPageButtons.forEach { it.draw(this) }
 
-            if (!state.card.showing) {
-                if (state.card.type == Cards.Type.CIRCLE)
-                    image(circleCard, 64f, 224f, width - 128f, height - 480f)
-                else
-                    image(plusCard, 64f, 224f, width - 128f, height - 480f)
-            }
+        // Draw the dice
+        val diceSize = 200f
+        val diceY = height - diceSize - 256f
+        drawDice(50f, diceY, diceSize, state.dice.x)
+        drawDice(width / 2f - diceSize / 2, diceY, diceSize, state.dice.y)
+        drawDice(width - 50f - diceSize, diceY, diceSize, state.dice.z)
+
+        textSize(45f)
+        fill(0)
+        if (state.dice.sum == 0 || state.dice.sum == 3 || state.dice.sum == 6)
+            text("You may add a pawn!", width / 2f, height - 192f)
+        text("Move ${state.dice.sum} step(s)", width / 2f, height - 128f)
+    }
+
+    fun drawCardsPage() {
+        cardPageButtons.forEach { it.draw(this) }
+
+        textAlign(CENTER)
+        textSize(45f)
+        fill(0)
+        image(card, 64f, 224f, width - 128f, height - 480f)
+        text(state.card.card, width / 2f, height / 2f)
+
+        if (!state.card.showing) {
+            if (state.card.type == Cards.Type.CIRCLE)
+                image(circleCard, 64f, 224f, width - 128f, height - 480f)
+            else
+                image(plusCard, 64f, 224f, width - 128f, height - 480f)
         }
     }
 

@@ -85,7 +85,7 @@ open class Button(
     }
 }
 
-class IconButton(
+open class IconButton(
         val image: PImage,
         x: Float,
         y: Float,
@@ -100,5 +100,29 @@ class IconButton(
 
     override fun draw(applet: PApplet) = applet.run {
         image(image, x, y)
+    }
+}
+
+class CircleIconButton(
+        image: PImage,
+        val backgroundColorR: Float = 216f,
+        val backgroundColorG: Float = 27f,
+        val backgroundColorB: Float = 96f,
+        x: Float,
+        y: Float,
+        width: Float = image.width.toFloat(),
+        height: Float = image.height.toFloat(),
+        val padding: Float,
+        onClick: () -> Unit = {}
+) : IconButton(image, x, y, width, height, onClick) {
+
+    override fun draw(applet: PApplet) = applet.run {
+        noStroke()
+        fill(backgroundColorR, backgroundColorG, backgroundColorB)
+        val w = this@CircleIconButton.width + padding
+        val h = this@CircleIconButton.height + padding
+        ellipse(x + w / 2, y + h / 2, w * 2, h * 2)
+
+        super.draw(this)
     }
 }

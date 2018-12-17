@@ -18,7 +18,7 @@ data class State(
         val sum = x + y + z
     }
 
-    data class Card(val type: Type, val card: String)
+    data class Card(val type: Type, val card: String, var showing: Boolean = false)
 
     fun throwDice() {
         dice = Random().run { Dice(nextInt(3), nextInt(3), nextInt(3)) }

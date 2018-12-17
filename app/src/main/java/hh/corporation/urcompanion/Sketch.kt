@@ -15,6 +15,8 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
     private val background by lazy { loadImageAsset("app_background.png")?.apply { resize(g.width, g.height) } }
     private val logo by lazy { loadImageAsset("ur.png") }
     private val card by lazy { loadImageAsset("card_background.png") }
+    private val circleCard by lazy { loadImageAsset("card_background_circle.png") }
+    private val plusCard by lazy { loadImageAsset("card_background_plus.png") }
     private val appBarButton by lazy {
         IconButton(
                 image = loadImageAsset("ic_book.png")!!,
@@ -26,6 +28,35 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         )
     }
 
+    private val cardPageButtons by lazy {
+        listOf(
+                IconButton(
+                        image = loadImageAsset("ic_back.png")!!,
+                        x = 32f,
+                        y = 100f,
+                        width = 72f,
+                        height = 72f,
+                        onClick = ::onBackPressed
+                ),
+                CircleIconButton(
+                        image = loadImageAsset("ic_view.png")!!,
+                        x = (width - 72f) / 2f,
+                        y = height - 148f,
+                        padding = 4f,
+                        width = 72f,
+                        height = 72f,
+                        onClick = { state.card.showing = true }
+                ),
+                IconButton(
+                        image = loadImageAsset("ic_next.png")!!,
+                        x = (width - 72f) / 1.3f,
+                        y = height - 132f,
+                        width = 72f,
+                        height = 72f,
+                        onClick = { state.drawCard(state.card.type); state.card.showing = false }
+                )
+        )
+    }
     private val mainPageButtons by lazy {
         listOf(
                 Button(
@@ -102,11 +133,20 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         }
 
         if (state.page == Page.CARDS) {
+            cardPageButtons.forEach { it.draw(this) }
+
             textAlign(CENTER)
             textSize(45f)
             fill(0)
             image(card, 64f, 224f, width - 128f, height - 480f)
             text(state.card.card, width / 2f, height / 2f)
+
+            if (!state.card.showing) {
+                if (state.card.type == Cards.Type.CIRCLE)
+                    image(circleCard, 64f, 224f, width - 128f, height - 480f)
+                else
+                    image(plusCard, 64f, 224f, width - 128f, height - 480f)
+            }
         }
     }
 
@@ -122,6 +162,10 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
             mainPageButtons.forEach {
                 it.touching = it.collides(p.x, p.y)
             }
+        } else if (state.page == Page.CARDS) {
+            cardPageButtons.forEach {
+                it.touching = it.collides(p.x, p.y)
+            }
         }
     }
 
@@ -130,6 +174,8 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         appBarButton.apply { touching = touching && collides(p.x, p.y) }
         if (state.page == Page.MAIN)
             mainPageButtons.forEach { it.touching = it.touching && it.collides(p.x, p.y) }
+        else if (state.page == Page.CARDS)
+            cardPageButtons.forEach { it.touching = it.touching && it.collides(p.x, p.y) }
     }
 
     override fun touchEnded(event: TouchEvent) {
@@ -139,6 +185,11 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         }
         if (state.page == Page.MAIN) {
             mainPageButtons.forEach {
+                if (it.touching) it.onClick()
+                it.touching = false
+            }
+        } else if (state.page == Page.CARDS) {
+            cardPageButtons.forEach {
                 if (it.touching) it.onClick()
                 it.touching = false
             }

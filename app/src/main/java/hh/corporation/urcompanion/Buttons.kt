@@ -74,7 +74,7 @@ open class Button(
         if (pressing) {
             // Draws a stroke and a slightly lighter button colour if the button is pressed
             stroke(strokeColor)
-            fill(colorR + 10, colorG + 10, colorB + 10)
+            fill(colorR + 20, colorG + 20, colorB + 20)
         } else {
             noStroke()
             fill(colorR, colorG, colorB)
@@ -103,14 +103,21 @@ open class IconButton(
         y: Float,
         w: Float = image.width.toFloat(),
         h: Float = image.height.toFloat(),
+        padding: Float = 0f,
         onClick: () -> Unit = {}
-) : Button(x, y, w, h, onClick = onClick) {
+) : Button(x, y, (w + padding) * 2, (h + padding) * 2, onClick = onClick) {
 
     init {
         image.resize(w.toInt(), h.toInt())
     }
 
     override fun draw(applet: PApplet) = applet.run {
+        if (pressing) {
+            // Draws a slightly transparent circular background if the button is pressed
+            noStroke()
+            fill(0f, 80f)
+            ellipse(x + w / 4, y + h / 4, w, h)
+        }
         image(image, x, y)
     }
 }
@@ -143,7 +150,7 @@ class CircularIconButton(
         if (pressing) {
             // Draws a stroke and a slightly lighter button colour if the button is pressed
             stroke(strokeColor)
-            fill(colorR + 10, colorG + 10, colorB + 10)
+            fill(colorR + 20, colorG + 20, colorB + 20)
         } else {
             noStroke()
             fill(colorR, colorG, colorB)

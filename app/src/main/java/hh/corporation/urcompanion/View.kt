@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package hh.corporation.urcompanion
 
 import processing.core.PApplet

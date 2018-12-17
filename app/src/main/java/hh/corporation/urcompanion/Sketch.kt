@@ -1,6 +1,5 @@
 package hh.corporation.urcompanion
 
-import hh.corporation.urcompanion.State.Page
 import hh.corporation.urcompanion.data.Cards
 import hh.corporation.urcompanion.util.loadImageAsset
 import hh.corporation.urcompanion.util.openPdf
@@ -96,7 +95,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         size(w, h)
     }
 
-    fun drawRect(
+    private fun drawRect(
             x: Float,
             y: Float,
             width: Float,
@@ -110,7 +109,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         rect(x, y, width, height, radii)
     }
 
-    fun drawDice(
+    private fun drawDice(
             x: Float,
             y: Float,
             size: Float,
@@ -139,7 +138,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         }
     }
 
-    fun drawMainPage() {
+    private fun drawMainPage() {
         fill(0)
         text("Draw a card", width / 2f, 640f)
         mainPageButtons.forEach { it.draw(this) }
@@ -158,7 +157,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         text("Move ${state.dice.sum} step(s)", width / 2f, height - 128f)
     }
 
-    fun drawCardsPage() {
+    private fun drawCardsPage() {
         cardPageButtons.forEach { it.draw(this) }
 
         textAlign(CENTER)

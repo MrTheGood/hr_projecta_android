@@ -14,26 +14,26 @@ object Cards {
             "Throw off any opponent pawn",
             "Throw off 2 opponent pawns",
 
-            "Move a pawn from an opponent of choice 3 steps back",
-            "Move a pawn from an opponent of choice 2 steps back",
-            "Move a pawn from an opponent of choice 1 step back",
-            "Move a pawn from an opponent of choice 1 step back",
+            "Move a pawn from an opponent\nof choice 3 steps back",
+            "Move a pawn from an opponent\nof choice 2 steps back",
+            "Move a pawn from an opponent\nof choice 1 step back",
+            "Move a pawn from an opponent\nof choice 1 step back",
 
             "Remove your pawn on the O tile",
             "Remove your pawn on the O tile",
 
-            "Move a pawn from an opponent of choice 3 steps forward",
-            "Move a pawn from an opponent of choice 2 steps forward",
-            "Move a pawn from an opponent of choice 1 step forward",
-            "Move a pawn from an opponent of choice 1 step forward",
+            "Move a pawn from an opponent\nof choice 3 steps forward",
+            "Move a pawn from an opponent\nof choice 2 steps forward",
+            "Move a pawn from an opponent\nof choice 1 step forward",
+            "Move a pawn from an opponent\nof choice 1 step forward",
 
-            "Go to the other O tile. Don't draw a card",
-            "Go to the other O tile. Don't draw a card",
-            "Go to the other O tile. Don't draw a card",
+            "Go to the other O tile.\nDon't draw a card",
+            "Go to the other O tile.\nDon't draw a card",
+            "Go to the other O tile.\nDon't draw a card",
 
-            "Throw all pawns off the board (including your own!)",
-            "All opponent players may place on pawn on the board",
-            "Let an opponent player draw a O card"
+            "Throw all pawns off the\nboard (including your own!)",
+            "All opponent players may\nplace on pawn on the board",
+            "Let an opponent player\ndraw a O card"
     ).shuffled())
 
     private val plusCards = LinkedList(arrayListOf(
@@ -41,27 +41,27 @@ object Cards {
             "Add a new pawn on the board",
             "Add 2 new pawns on the board",
 
-            "Move one of your pawns 3 steps forward",
-            "Move one of your pawns 2 steps forward",
-            "Move one of your pawns 1 step forward",
+            "Move one of your pawns\n3 steps forward",
+            "Move one of your pawns\n2 steps forward",
+            "Move one of your pawns\n1 step forward",
 
             "Throw the dice again.",
 
-            "Remove your pawn on the + tile",
-            "Remove one of your own pawns",
+            "Remove your pawn on\nthe + tile",
+            "Remove one of your\nown pawns",
 
-            "Move one of your pawns 3 steps back",
-            "Move one of your pawns 2 steps back",
-            "Move one of your pawns 1 step back",
-            "Move one of your pawns 1 step back",
+            "Move one of your pawns\n3 steps back",
+            "Move one of your pawns\n2 steps back",
+            "Move one of your pawns\n1 step back",
+            "Move one of your pawns\n1 step back",
 
-            "Go to the other + tile. Don't draw a card",
-            "Go to the other + tile. Don't draw a card",
-            "Go to the other + tile. Don't draw a card",
+            "Go to the other + tile.\nDon't draw a card",
+            "Go to the other + tile.\nDon't draw a card",
+            "Go to the other + tile.\nDon't draw a card",
 
-            "Switch one of your pawns with one opponent pawn",
-            "Move one of your pawns back to the start",
-            "Let an opponent player draw a + card"
+            "Switch one of your pawns\nwith one opponent pawn",
+            "Move one of your pawns\nback to the start",
+            "Let an opponent player\ndraw a + card"
     ).shuffled())
 
     /**

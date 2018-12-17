@@ -106,10 +106,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
             textSize(45f)
             fill(0)
             image(card, 64f, 224f, width - 128f, height - 480f)
-            state.card.card.run {
-                for (i in 0..length step 26)
-                    text(substring(i, (i + 26).coerceAtMost(length)), width / 2f, height / 2f + i * 2)
-            }
+            text(state.card.card, width / 2f, height / 2f)
         }
     }
 

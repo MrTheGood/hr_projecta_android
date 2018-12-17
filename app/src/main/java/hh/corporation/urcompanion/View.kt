@@ -7,45 +7,49 @@ import processing.core.PImage
  * Created by maartendegoede on 05/12/2018.
  * Copyright © 2018 insetCode.eu. All rights reserved.
  */
-abstract class View(
+open class Button(
         var x: Float,
         var y: Float,
-        var width: Float,
-        var height: Float
-) {
-    fun collides(x: Float, y: Float) =
-            x > this.x && x < this.x + width &&
-                    y > this.y && y < this.y + height
-
-    abstract fun draw(applet: PApplet)
-}
-
-open class Button(
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float,
+        var w: Float,
+        var h: Float,
         var radii: Float = 8f,
         var colorR: Float = 216f,
         var colorG: Float = 27f,
         var colorB: Float = 96f,
+        var textSize: Float = 45f,
         var textColor: Int = 255,
         var text: String = "",
+        var strokeColor: Int = 0,
+        var pressing: Boolean = false,
         var onClick: () -> Unit = {}
-) : View(x, y, width, height) {
-    var touching = false
+) {
+    private fun collides(x: Float, y: Float) =
+            x > this.x && x < this.x + w &&
+                    y > this.y && y < this.y + h
 
-    override fun draw(applet: PApplet) = applet.run {
-        if (touching) stroke(0)
+    fun touchStarted(x: Float, y: Float) {
+        pressing = collides(x, y)
+    }
+
+    fun touchMoved(x: Float, y: Float) {
+        pressing = pressing && collides(x, y)
+    }
+
+    fun touchEnded() {
+        if (pressing) onClick()
+        pressing = false
+    }
+
+    open fun draw(applet: PApplet) = applet.run {
+        if (pressing) stroke(strokeColor)
         else noStroke()
 
-        textSize(45f)
+        textSize(textSize)
         fill(colorR, colorG, colorB)
-        rect(x, y, this@Button.width, this@Button.height, radii)
+        rect(x, y, w, h, radii)
 
         fill(textColor)
-        text(text, x + this@Button.width / 2f, y + this@Button.height / 1.5f)
-        stroke(0)
+        text(text, x + w / 2f, y + h / 1.5f)
     }
 }
 
@@ -53,13 +57,13 @@ open class IconButton(
         val image: PImage,
         x: Float,
         y: Float,
-        width: Float = image.width.toFloat(),
-        height: Float = image.height.toFloat(),
+        w: Float = image.width.toFloat(),
+        h: Float = image.height.toFloat(),
         onClick: () -> Unit = {}
-) : Button(x, y, width, height, onClick = onClick) {
+) : Button(x, y, w, h, onClick = onClick) {
 
     init {
-        image.resize(width.toInt(), height.toInt())
+        image.resize(w.toInt(), h.toInt())
     }
 
     override fun draw(applet: PApplet) = applet.run {
@@ -67,24 +71,24 @@ open class IconButton(
     }
 }
 
-class CircleIconButton(
+class CircularIconButton(
         image: PImage,
         val backgroundColorR: Float = 216f,
         val backgroundColorG: Float = 27f,
         val backgroundColorB: Float = 96f,
         x: Float,
         y: Float,
-        width: Float = image.width.toFloat(),
-        height: Float = image.height.toFloat(),
+        w: Float = image.width.toFloat(),
+        h: Float = image.height.toFloat(),
         val padding: Float,
         onClick: () -> Unit = {}
-) : IconButton(image, x, y, width, height, onClick) {
+) : IconButton(image, x, y, w, h, onClick) {
 
     override fun draw(applet: PApplet) = applet.run {
         noStroke()
         fill(backgroundColorR, backgroundColorG, backgroundColorB)
-        val w = this@CircleIconButton.width + padding
-        val h = this@CircleIconButton.height + padding
+        val w = w + padding
+        val h = h + padding
         ellipse(x + w / 2, y + h / 2, w * 2, h * 2)
 
         super.draw(this)

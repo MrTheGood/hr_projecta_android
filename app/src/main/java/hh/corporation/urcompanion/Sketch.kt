@@ -1,16 +1,83 @@
 package hh.corporation.urcompanion
 
-import hh.corporation.urcompanion.data.Cards
 import hh.corporation.urcompanion.util.loadImageAsset
 import hh.corporation.urcompanion.util.openPdf
 import processing.core.PApplet
 import processing.event.TouchEvent
+import java.util.*
 
 /**
  * Created by maartendegoede on 04/12/2018.
  */
+const val PAGE_MAIN = "MAIN"
+const val PAGE_CARD = "CARD"
+
+const val CARD_PLUS = "PLUS"
+const val CARD_CIRCLE = "CIRCLE"
+
+
 class Sketch(private val w: Int, private val h: Int) : PApplet() {
-    private val state = State(State.Page.MAIN)
+    private var currentPage = PAGE_MAIN
+    private var currentDice = listOf(0, 0, 0)
+
+    private var currentCardType = CARD_PLUS
+    private var currentCard = ""
+    private var showingCard = false
+
+    private val circleCards = LinkedList(listOf(
+            "Throw off any opponent pawn",
+            "Throw off any opponent pawn",
+            "Throw off 2 opponent pawns",
+
+            "Move a pawn from an opponent\nof choice 3 steps back",
+            "Move a pawn from an opponent\nof choice 2 steps back",
+            "Move a pawn from an opponent\nof choice 1 step back",
+            "Move a pawn from an opponent\nof choice 1 step back",
+
+            "Remove your pawn on the O tile",
+            "Remove your pawn on the O tile",
+
+            "Move a pawn from an opponent\nof choice 3 steps forward",
+            "Move a pawn from an opponent\nof choice 2 steps forward",
+            "Move a pawn from an opponent\nof choice 1 step forward",
+            "Move a pawn from an opponent\nof choice 1 step forward",
+
+            "Go to the other O tile.\nDon't draw a card",
+            "Go to the other O tile.\nDon't draw a card",
+            "Go to the other O tile.\nDon't draw a card",
+
+            "Throw all pawns off the\nboard (including your own!)",
+            "All opponent players may\nplace on pawn on the board",
+            "Let an opponent player\ndraw a O card"
+    ).shuffled())
+    private val plusCards = LinkedList(listOf(
+            "Add a new pawn on the board",
+            "Add a new pawn on the board",
+            "Add 2 new pawns on the board",
+
+            "Move one of your pawns\n3 steps forward",
+            "Move one of your pawns\n2 steps forward",
+            "Move one of your pawns\n1 step forward",
+
+            "Throw the dice again.",
+
+            "Remove your pawn on\nthe + tile",
+            "Remove one of your\nown pawns",
+
+            "Move one of your pawns\n3 steps back",
+            "Move one of your pawns\n2 steps back",
+            "Move one of your pawns\n1 step back",
+            "Move one of your pawns\n1 step back",
+
+            "Go to the other + tile.\nDon't draw a card",
+            "Go to the other + tile.\nDon't draw a card",
+            "Go to the other + tile.\nDon't draw a card",
+
+            "Switch one of your pawns\nwith one opponent pawn",
+            "Move one of your pawns\nback to the start",
+            "Let an opponent player\ndraw a + card"
+    ).shuffled())
+
     private val background by lazy { loadImageAsset("app_background.png")?.apply { resize(g.width, g.height) } }
     private val logo by lazy { loadImageAsset("ur.png") }
     private val card by lazy { loadImageAsset("card_background.png") }
@@ -28,67 +95,53 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
     }
 
     private val cardPageButtons by lazy {
-        listOf(
-                IconButton(
-                        image = loadImageAsset("ic_back.png")!!,
-                        x = 32f,
-                        y = 100f,
-                        w = 72f,
-                        h = 72f,
-                        onClick = ::onBackPressed
-                ),
-                CircularIconButton(
-                        image = loadImageAsset("ic_view.png")!!,
-                        x = (width - 72f) / 2f,
-                        y = height - 148f,
-                        padding = 4f,
-                        w = 72f,
-                        h = 72f,
-                        onClick = { state.card.showing = true }
-                ),
-                IconButton(
-                        image = loadImageAsset("ic_next.png")!!,
-                        x = (width - 72f) / 1.3f,
-                        y = height - 132f,
-                        w = 72f,
-                        h = 72f,
-                        onClick = { state.drawCard(state.card.type); state.card.showing = false }
-                )
-        )
+        listOf(IconButton(
+                image = loadImageAsset("ic_back.png")!!,
+                x = 32f,
+                y = 100f,
+                w = 72f,
+                h = 72f,
+                onClick = ::onBackPressed
+        ), CircularIconButton(
+                image = loadImageAsset("ic_view.png")!!,
+                x = (width - 72f) / 2f,
+                y = height - 148f,
+                padding = 4f,
+                w = 72f,
+                h = 72f,
+                onClick = { showingCard = true }
+        ), IconButton(
+                image = loadImageAsset("ic_next.png")!!,
+                x = (width - 72f) / 1.3f,
+                y = height - 132f,
+                w = 72f,
+                h = 72f,
+                onClick = { drawCard() }
+        ))
     }
     private val mainPageButtons by lazy {
-        listOf(
-                Button(
-                        x = width / 2f - 128f,
-                        y = 672f,
-                        w = 256f,
-                        h = 96f,
-                        text = "+ PLUS",
-                        onClick = {
-                            state.drawCard(Cards.Type.PLUS)
-                            state.page = Page.CARDS
-                        }
-                ),
-                Button(
-                        x = width / 2f - 128f,
-                        y = 800f,
-                        w = 256f,
-                        h = 96f,
-                        text = "O CIRCLE",
-                        onClick = {
-                            state.drawCard(Cards.Type.CIRCLE)
-                            state.page = Page.CARDS
-                        }
-                ),
-                Button(
-                        x = width / 2f - 144f,
-                        y = height - 650f,
-                        w = 288f,
-                        h = 96f,
-                        text = "THROW DICE",
-                        onClick = state::throwDice
-                )
-        )
+        listOf(Button(
+                x = width / 2f - 128f,
+                y = 672f,
+                w = 256f,
+                h = 96f,
+                text = "+ PLUS",
+                onClick = { drawCard(CARD_PLUS) }
+        ), Button(
+                x = width / 2f - 128f,
+                y = 800f,
+                w = 256f,
+                h = 96f,
+                text = "O CIRCLE",
+                onClick = { drawCard(CARD_CIRCLE) }
+        ), Button(
+                x = width / 2f - 144f,
+                y = height - 650f,
+                w = 288f,
+                h = 96f,
+                text = "THROW DICE",
+                onClick = ::throwDice
+        ))
     }
 
     override fun settings() {
@@ -129,12 +182,10 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
 
         image(logo, width / 2f - 88f, 56f, 176f, 160f)
         appBarButton.draw(this)
-        if (state.page == Page.MAIN) {
-            drawMainPage()
-        }
 
-        if (state.page == Page.CARDS) {
-            drawCardsPage()
+        when (currentPage) {
+            PAGE_MAIN -> drawMainPage()
+            PAGE_CARD -> drawCardsPage()
         }
     }
 
@@ -146,15 +197,16 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         // Draw the dice
         val diceSize = 200f
         val diceY = height - diceSize - 256f
-        drawDice(50f, diceY, diceSize, state.dice.x)
-        drawDice(width / 2f - diceSize / 2, diceY, diceSize, state.dice.y)
-        drawDice(width - 50f - diceSize, diceY, diceSize, state.dice.z)
+        drawDice(50f, diceY, diceSize, currentDice[0])
+        drawDice(width / 2f - diceSize / 2, diceY, diceSize, currentDice[1])
+        drawDice(width - 50f - diceSize, diceY, diceSize, currentDice[2])
 
         textSize(45f)
         fill(0)
-        if (state.dice.sum == 0 || state.dice.sum == 3 || state.dice.sum == 6)
+        val sum = currentDice.sum()
+        if (sum == 0 || sum == 3 || sum == 6)
             text("You may add a pawn!", width / 2f, height - 192f)
-        text("Move ${state.dice.sum} step(s)", width / 2f, height - 128f)
+        text("Move $sum step(s)", width / 2f, height - 128f)
     }
 
     private fun drawCardsPage() {
@@ -164,18 +216,18 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         textSize(45f)
         fill(0)
         image(card, 64f, 224f, width - 128f, height - 480f)
-        text(state.card.card, width / 2f, height / 2f)
+        text(currentCard, width / 2f, height / 2f)
 
-        if (!state.card.showing) {
-            if (state.card.type == Cards.Type.CIRCLE)
-                image(circleCard, 64f, 224f, width - 128f, height - 480f)
-            else
-                image(plusCard, 64f, 224f, width - 128f, height - 480f)
+        if (!showingCard) {
+            when (currentCardType) {
+                CARD_CIRCLE -> image(circleCard, 64f, 224f, width - 128f, height - 480f)
+                CARD_PLUS -> image(plusCard, 64f, 224f, width - 128f, height - 480f)
+            }
         }
     }
 
     override fun onBackPressed() {
-        if (state.page == Page.CARDS) state.page = Page.MAIN
+        if (currentPage == PAGE_CARD) currentPage = PAGE_MAIN
         else super.onBackPressed()
     }
 
@@ -183,9 +235,9 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         val p = event.getPointer(0)
         appBarButton.touchStarted(p.x, p.y)
 
-        when (state.page) {
-            Page.MAIN -> mainPageButtons.forEach { it.touchStarted(p.x, p.y) }
-            Page.CARDS -> cardPageButtons.forEach { it.touchStarted(p.x, p.y) }
+        when (currentPage) {
+            PAGE_MAIN -> mainPageButtons.forEach { it.touchStarted(p.x, p.y) }
+            PAGE_CARD -> cardPageButtons.forEach { it.touchStarted(p.x, p.y) }
         }
     }
 
@@ -193,18 +245,29 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
         val p = event.getPointer(0)
         appBarButton.touchMoved(p.x, p.y)
 
-        when (state.page) {
-            Page.MAIN -> mainPageButtons.forEach { it.touchMoved(p.x, p.y) }
-            Page.CARDS -> cardPageButtons.forEach { it.touchMoved(p.x, p.y) }
+        when (currentPage) {
+            PAGE_MAIN -> mainPageButtons.forEach { it.touchMoved(p.x, p.y) }
+            PAGE_CARD -> cardPageButtons.forEach { it.touchMoved(p.x, p.y) }
         }
     }
 
     override fun touchEnded(event: TouchEvent) {
         appBarButton.touchEnded()
 
-        when (state.page) {
-            Page.MAIN -> mainPageButtons.forEach { it.touchEnded() }
-            Page.CARDS -> cardPageButtons.forEach { it.touchEnded() }
+        when (currentPage) {
+            PAGE_MAIN -> mainPageButtons.forEach { it.touchEnded() }
+            PAGE_CARD -> cardPageButtons.forEach { it.touchEnded() }
+        }
+    }
+
+    private fun throwDice() {
+        currentDice = Random().run { listOf(nextInt(3), nextInt(3), nextInt(3)) }
+    }
+
+    private fun drawCard(cardType: String = currentCardType) {
+        when (cardType) {
+            CARD_PLUS -> plusCards.pop().also { plusCards.add(it) }
+            CARD_CIRCLE -> circleCards.pop().also { circleCards.add(it) }
         }
     }
 }

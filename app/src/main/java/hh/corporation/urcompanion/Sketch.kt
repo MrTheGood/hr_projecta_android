@@ -14,6 +14,7 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
     private val state = State(State.Page.MAIN)
     private val background by lazy { loadImageAsset("app_background.png")?.apply { resize(g.width, g.height) } }
     private val logo by lazy { loadImageAsset("ur.png") }
+    private val card by lazy { loadImageAsset("card_background.png") }
     private val appBarButton by lazy {
         IconButton(
                 image = loadImageAsset("ic_book.png")!!,
@@ -104,7 +105,8 @@ class Sketch(private val w: Int, private val h: Int) : PApplet() {
             textAlign(CENTER)
             textSize(45f)
             fill(0)
-            text("Card type: ${state.card.type}:${state.card.card}", width / 2f, height / 2f)
+            image(card, 64f, 224f, width - 128f, height - 480f)
+            text(state.card.card, width / 2f, height / 2f)
         }
     }
 

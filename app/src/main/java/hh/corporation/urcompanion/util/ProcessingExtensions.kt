@@ -14,7 +14,10 @@ import java.io.InputStream
 
 /**
  * Created by maartendegoede on 05/12/2018.
- * Copyright © 2018 insetCode.eu. All rights reserved.
+ *
+ *
+ * You can ignore this file.
+ * This is just some android specific stuff for opening PDFs or loading images from the assets folder.
  */
 fun PApplet.loadImageAsset(asset: String): PImage? {
     var stream: InputStream? = null

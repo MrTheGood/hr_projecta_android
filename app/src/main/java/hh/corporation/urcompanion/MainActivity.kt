@@ -7,6 +7,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import processing.android.PFragment
 
 class MainActivity : AppCompatActivity() {
+    /**
+     * You can ignore this file. This is just Android specific stuff.
+     */
+
     private val sketch by lazy {
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
